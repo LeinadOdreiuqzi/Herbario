@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Herbario</title>
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link rel="stylesheet" href="./assets/css/ui.css" />
+  </head>
+  <body>
+    <!-- Enlace para saltar directamente al contenido principal (accesibilidad) -->
+    <a href="#app" class="skip-link">Saltar al contenido</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <h1 class="brand"><a href="#/" class="brand-link"><span class="logo" aria-hidden="true"></span><span class="brand-text">Herbario</span></a></h1>
+        <nav class="nav">
+          <a href="#/">Inicio</a>
+          <a href="#/docs">Especies</a>
+          <a href="#/form">Enviar Especie</a>
+          <a href="#/especies">Aportes</a>
+          <a href="#/mapa">Mapa</a>
+          <a href="./admin.html" data-requires-role="admin">Admin</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Región aria-live para anunciar cambios de vista a lectores de pantalla -->
+    <div id="sr-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <main id="app" class="container" tabindex="-1"></main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <small>© Herbario Comunitario</small>
+      </div>
+    </footer>
+
+    <script type="module" src="./assets/js/spa.js"></script>
+  </body>
+</html>

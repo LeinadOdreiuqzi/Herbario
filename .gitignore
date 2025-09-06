@@ -1,0 +1,131 @@
+# Archivos de entorno y credenciales
+.env
+.env.local
+.env.production
+.env.staging
+
+# Dependencias de Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+
+# Archivos de runtime
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Directorio de cobertura de pruebas
+coverage/
+.nyc_output/
+
+# Archivos de cache
+.npm
+.eslintcache
+
+# Archivos de uploads (imágenes subidas por usuarios)
+uploads/
+
+# Archivos de backup
+backups/
+*.sql.backup
+*.dump
+
+# Archivos temporales del sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Certificados SSL (se generan en el servidor)
+*.pem
+*.key
+*.crt
+*.csr
+
+# Archivos de PM2
+.pm2/
+
+# Archivos de Docker (opcionales en desarrollo)
+# docker-compose.override.yml
+
+# Archivos de configuración local específicos
+config/local.js
+config/local.json
+
+# Archivos de monitoreo y métricas
+monitoring/
+metrics/
+
+# Cache de Nginx
+/var/cache/nginx/
+
+# Archivos de sesión
+sessions/
+
+# Archivos de configuración específicos del servidor
+/etc/nginx/sites-enabled/herbario
+/etc/systemd/system/herbario.service
+
+# Variables de entorno específicas del servidor
+.env.server
+.env.vps
+
+# Archivos de configuración de base de datos con credenciales
+db_config.json
+database.json
+
+# Archivos de configuración de Cloudflare con tokens
+cloudflare.json
+*.cloudflare
+
+# Archivos de configuración de correo con credenciales
+mail_config.json
+
+# Archivos de configuración de servicios externos
+services_config.json
+
+# Archivos de pruebas locales
+test_local/
+*.test.local.*
+
+# Archivos de desarrollo
+dev_notes.md
+todo_personal.md
+
+# Archivos de configuración de herramientas de desarrollo
+.eslintrc.local.js
+.prettierrc.local
+
+# Archivos de configuración de CI/CD con secretos
+.github/workflows/*.local.yml
+
+# Archivos de configuración de Docker con secretos
+docker-compose.secrets.yml
+
+# Archivos de configuración de Kubernetes con secretos
+k8s-secrets.yaml
+
+# Archivos de configuración de Terraform con estado
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Archivos de configuración de Ansible con inventarios privados
+inventory.private
+vault_pass.txt

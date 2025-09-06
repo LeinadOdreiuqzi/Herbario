@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Herbario logo temporal">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <filter id="s" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.2" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect x="1" y="1" width="26" height="26" rx="6" fill="#0b1220" stroke="#1f2937"/>
+  <g filter="url(#s)">
+    <path d="M14 4c3.5 0 7 3 7 7 0 6-6 11-7 13-1-2-7-7-7-13 0-4 3.5-7 7-7z" fill="url(#g)"/>
+    <path d="M14 6c-2.2 0-4 1.8-4 4 0 3.9 3.2 7 4 8 .8-1 4-4.1 4-8 0-2.2-1.8-4-4-4z" fill="#4ade80" fill-opacity="0.3"/>
+    <path d="M14 9c-.8 0-1.5.7-1.5 1.5 0 1.5 1.2 2.7 1.5 3 .3-.3 1.5-1.5 1.5-3 0-.8-.7-1.5-1.5-1.5z" fill="#eafff1" fill-opacity="0.6"/>
+  </g>
+</svg>

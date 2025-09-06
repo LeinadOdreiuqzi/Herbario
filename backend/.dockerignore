@@ -1,0 +1,109 @@
+# Archivos de desarrollo
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn
+
+# Archivos de entorno
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs
+*.log
+
+# Archivos temporales
+.tmp
+.temp
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Control de versiones
+.git
+.gitignore
+.gitattributes
+
+# IDEs
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Documentación
+README.md
+*.md
+docs/
+
+# Tests
+test/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+coverage/
+.nyc_output
+
+# Archivos de configuración de desarrollo
+nodemon.json
+.eslintrc*
+.prettierrc*
+jest.config.js
+
+# Uploads y archivos generados
+uploads/
+static/
+public/
+
+# Backups
+backups/
+*.backup
+*.bak
+
+# Archivos de Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Scripts de desarrollo
+scripts/dev*
+scripts/test*
+
+# Archivos de configuración local
+.local
+.cache
+
+# Archivos de PM2
+ecosystem.config.js
+
+# Certificados y claves (nunca incluir en imagen)
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Archivos de base de datos
+*.sql
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos de configuración de servidor
+nginx/
+
+# Archivos de monitoreo
+monitoring/
+
+# Archivos de CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile

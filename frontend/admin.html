@@ -1,0 +1,73 @@
+<!doctype html>
+<html  lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Herbario | Admin</title>
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link rel="stylesheet" href="./assets/css/ui.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <h1 class="brand"><a href="./index.html#/" class="brand-link"><span class="logo" aria-hidden="true"></span><span class="brand-text">Herbario</span></a></h1>
+        <nav class="nav">
+          <a href="./index.html#/">Inicio</a>
+          <a href="./index.html#/docs">Especies</a>
+          <a href="./index.html#/form">Enviar Especie</a>
+          <a href="./index.html#/especies">Aportes</a>
+          <a href="./index.html#/mapa">Mapa</a>
+          <a href="./admin.html">Admin</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <h2>Panel de Administración</h2>
+
+      <section id="loginSection" style="margin-bottom:16px;">
+        <form id="loginForm" class="form-grid">
+          <div class="form-field">
+            <label for="login_email">Email</label>
+            <input type="email" id="login_email" placeholder="Tu email" required autocomplete="email" />
+          </div>
+          <div class="form-field">
+            <label for="login_password">Password</label>
+            <input type="password" id="login_password" placeholder="Tu contraseña" required autocomplete="current-password" />
+          </div>
+          <div style="grid-column:1/-1;display:flex;gap:8px;">
+            <button type="submit" class="btn">Iniciar sesión</button>
+          </div>
+        </form>
+        <div style="margin-top:8px;">
+          <button type="button" id="btnLogout" class="btn btn-secondary" style="display:none;">Cerrar sesión</button>
+        </div>
+      </section>
+
+      <!-- Indicador de sesión (visible solo cuando hay sesión) -->
+        <div id="sessionInfo" class="session-info" style="display:none;margin-top:8px;"></div>
+      </section>
+
+      <section id="pendingSection" style="margin-bottom:24px; display:none;">
+        <h3>Peticiones pendientes</h3>
+        <div id="pendingList" class="grid"></div>
+      </section>
+
+      <section id="acceptedSection" style="display:none;">
+        <h3>Especies aceptadas</h3>
+        <div id="acceptedList" class="grid"></div>
+      </section>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <small>© Herbario Comunitario</small>
+      </div>
+    </footer>
+
+    <script type="module" src="./assets/js/shared.js"></script>
+    <script type="module" src="./assets/js/admin.js"></script>
+  </body>
+</html>

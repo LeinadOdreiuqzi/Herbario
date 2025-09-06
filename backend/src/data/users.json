@@ -1,0 +1,9 @@
+[
+  {
+    "id": "admin-1",
+    "email": "admin@herbario.local",
+    "name": "Admin",
+    "role": "admin",
+    "password": "pbkdf2$100000$<salt>$<hash>"  
+  }
+]

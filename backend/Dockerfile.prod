@@ -1,0 +1,75 @@
+# Dockerfile optimizado para producción - Herbario Backend
+# Optimizado para VPS con recursos limitados (1 CPU, 4GB RAM)
+
+# Etapa 1: Build
+FROM node:18-alpine AS builder
+
+# Instalar dependencias del sistema necesarias
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/cache/apk/*
+
+# Crear directorio de trabajo
+WORKDIR /app
+
+# Copiar archivos de dependencias
+COPY package*.json ./
+
+# Instalar dependencias de producción
+RUN npm ci --only=production --no-audit --no-fund \
+    && npm cache clean --force
+
+# Etapa 2: Producción
+FROM node:18-alpine AS production
+
+# Instalar dependencias mínimas del sistema
+RUN apk add --no-cache \
+    curl \
+    dumb-init \
+    && rm -rf /var/cache/apk/*
+
+# Crear usuario no-root para seguridad
+RUN addgroup -g 1001 -S herbario \
+    && adduser -S herbario -u 1001 -G herbario
+
+# Crear directorios necesarios
+WORKDIR /app
+RUN mkdir -p uploads logs \
+    && chown -R herbario:herbario /app
+
+# Copiar dependencias desde la etapa de build
+COPY --from=builder --chown=herbario:herbario /app/node_modules ./node_modules
+
+# Copiar código fuente
+COPY --chown=herbario:herbario . .
+
+# Configurar variables de entorno para optimización
+ENV NODE_ENV=production \
+    PORT=3001 \
+    UV_THREADPOOL_SIZE=2 \
+    NODE_OPTIONS="--max-old-space-size=384 --optimize-for-size" \
+    NPM_CONFIG_LOGLEVEL=warn
+
+# Exponer puerto
+EXPOSE 3001
+
+# Cambiar a usuario no-root
+USER herbario
+
+# Configurar health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:3001/health || exit 1
+
+# Usar dumb-init para manejo correcto de señales
+ENTRYPOINT ["dumb-init", "--"]
+
+# Comando por defecto
+CMD ["node", "src/server.js"]
+
+# Metadatos
+LABEL maintainer="Herbario Team" \
+      version="1.0.0" \
+      description="Herbario Backend - Optimizado para producción" \
+      org.opencontainers.image.source="https://github.com/usuario/herbario"
