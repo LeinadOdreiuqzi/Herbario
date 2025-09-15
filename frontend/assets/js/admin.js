@@ -49,17 +49,28 @@ function setupHistoryProtection() {
 
 // Verificar sesión y redirigir si no es válida
 async function verifySessionAndRedirect() {
+  // Si no hay token, no redirigimos: permitimos mostrar el formulario de login
+  let token = '';
+  try { token = sessionStorage.getItem('JWT') || ''; } catch (_) { token = ''; }
+
+  if (!token) {
+    // Actualizar UI para asegurar que se muestra el formulario de login
+    await updateUIAuth();
+    return false;
+  }
+
   try {
     const { data, error } = await apiClient.verify();
     
     if (error || !data?.user) {
-      // No hay sesión válida, redirigir a la página principal
+      // Si había token pero no es válido, redirigimos al inicio
       redirectToHome();
       return false;
     }
     return true;
   } catch (err) {
     console.warn('[Admin] Error verificando sesión:', err);
+    // Ante error con token presente, redirigir
     redirectToHome();
     return false;
   }
@@ -302,37 +313,166 @@ async function rejectPlant(id, scope) {
 }
 
 // Editar una planta
-async function editPlant(item, scope) {
-  const newName = prompt('Nuevo nombre (name):', item.name || '');
-  if (newName === null) return; // cancelado
-  const newFamily = prompt('Nueva familia (family):', item.family || '');
-  if (newFamily === null) return;
+// Crear/reutilizar modal de edición
+let editModalEl = null;
+let editFormEl = null;
+let editItemOriginal = null;
 
-  const payload = {};
-  if (newName) {
-    payload.name = newName;
-  }
-  if (newFamily) {
-    payload.family = newFamily;
-  }
-  if (!Object.keys(payload).length) {
+function ensureEditModal() {
+  if (editModalEl) return editModalEl;
+  const overlay = document.createElement('div');
+  overlay.id = 'editModalOverlay';
+  overlay.style.position = 'fixed';
+  overlay.style.inset = '0';
+  overlay.style.background = 'rgba(0,0,0,0.45)';
+  overlay.style.display = 'none';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.zIndex = '9999';
+
+  const dialog = document.createElement('div');
+  dialog.style.width = 'min(740px, 96vw)';
+  dialog.style.maxHeight = '90vh';
+  dialog.style.overflow = 'auto';
+  dialog.style.background = '#0f172a';
+  dialog.style.borderRadius = '12px';
+  dialog.style.boxShadow = '0 10px 30px rgba(0,0,0,0.25)';
+  dialog.style.padding = '20px';
+
+  const title = document.createElement('h3');
+  title.textContent = 'Editar especie';
+  title.style.marginTop = '0';
+
+  const form = document.createElement('form');
+  form.className = 'form-grid';
+
+  form.innerHTML = `
+    <div class="form-field">
+      <label for="edit_name">Nombre (name)</label>
+      <input type="text" id="edit_name" placeholder="Nombre" />
+    </div>
+    <div class="form-field">
+      <label for="edit_scientific_name">Nombre científico (scientific_name)</label>
+      <input type="text" id="edit_scientific_name" placeholder="Nombre científico" />
+    </div>
+    <div class="form-field">
+      <label for="edit_family">Familia (family)</label>
+      <input type="text" id="edit_family" placeholder="Familia" />
+    </div>
+    <div class="form-field" style="grid-column:1/-1;">
+      <label for="edit_description">Descripción</label>
+      <textarea id="edit_description" rows="4" placeholder="Descripción"></textarea>
+    </div>
+    <div class="form-field">
+      <label for="edit_latitude">Latitud</label>
+      <input type="number" step="any" id="edit_latitude" placeholder="Latitud" />
+    </div>
+    <div class="form-field">
+      <label for="edit_longitude">Longitud</label>
+      <input type="number" step="any" id="edit_longitude" placeholder="Longitud" />
+    </div>
+    <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+      <button type="button" id="edit_cancel" class="btn btn-secondary">Cancelar</button>
+      <button type="submit" class="btn">Guardar cambios</button>
+    </div>
+  `;
+
+  dialog.appendChild(title);
+  dialog.appendChild(form);
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeEditModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (overlay.style.display !== 'none' && e.key === 'Escape') closeEditModal();
+  });
+
+  const cancelBtn = form.querySelector('#edit_cancel');
+  cancelBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeEditModal();
+  });
+
+  form.addEventListener('submit', onEditFormSubmit);
+
+  editModalEl = overlay;
+  editFormEl = form;
+  return overlay;
+}
+
+function openEditModal(item) {
+  ensureEditModal();
+  editItemOriginal = { ...item };
+
+  editFormEl.querySelector('#edit_name').value = item.name || '';
+  editFormEl.querySelector('#edit_scientific_name').value = item.scientific_name || '';
+  editFormEl.querySelector('#edit_family').value = item.family || '';
+  editFormEl.querySelector('#edit_description').value = item.description || '';
+  editFormEl.querySelector('#edit_latitude').value = (item.latitude ?? '') === null ? '' : String(item.latitude ?? '');
+  editFormEl.querySelector('#edit_longitude').value = (item.longitude ?? '') === null ? '' : String(item.longitude ?? '');
+
+  editModalEl.style.display = 'flex';
+}
+
+function closeEditModal() {
+  if (editModalEl) editModalEl.style.display = 'none';
+  editItemOriginal = null;
+}
+
+async function onEditFormSubmit(e) {
+  e.preventDefault();
+  if (!editItemOriginal) return closeEditModal();
+
+  const name = editFormEl.querySelector('#edit_name').value.trim();
+  const scientific_name = editFormEl.querySelector('#edit_scientific_name').value.trim();
+  const family = editFormEl.querySelector('#edit_family').value.trim();
+  const description = editFormEl.querySelector('#edit_description').value.trim();
+  const latRaw = editFormEl.querySelector('#edit_latitude').value.trim();
+  const lngRaw = editFormEl.querySelector('#edit_longitude').value.trim();
+
+  const payload = {
+    name,
+    scientific_name,
+    family,
+    description,
+    latitude: latRaw === '' ? '' : latRaw,
+    longitude: lngRaw === '' ? '' : lngRaw
+  };
+
+  const changed = (
+    (payload.name !== (editItemOriginal.name || '')) ||
+    (payload.scientific_name !== (editItemOriginal.scientific_name || '')) ||
+    (payload.family !== (editItemOriginal.family || '')) ||
+    (payload.description !== (editItemOriginal.description || '')) ||
+    (String(payload.latitude ?? '') !== String(editItemOriginal.latitude ?? '')) ||
+    (String(payload.longitude ?? '') !== String(editItemOriginal.longitude ?? ''))
+  );
+
+  if (!changed) {
     showToast('Sin cambios');
     return;
   }
 
   try {
-    const { error } = await apiClient.request(`/plants/${item.id}`, {
+    const { error } = await apiClient.request(`/plants/${editItemOriginal.id}`, {
       method: 'PUT',
       body: payload
     });
     if (error) throw error;
 
     showToast('Solicitud actualizada');
+    closeEditModal();
     await Promise.all([loadPending(), loadAccepted()]);
   } catch (err) {
-    console.error('[Admin] editPlant error:', err?.message || err);
+    console.error('[Admin] edit submit error:', err?.message || err);
     showToast('Error al actualizar');
   }
+}
+
+async function editPlant(item, _scope) {
+  openEditModal(item);
 }
 
 // Manejar login

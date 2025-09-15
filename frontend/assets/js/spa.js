@@ -20,10 +20,11 @@ const state = {
 function viewHome() {
   return `
     <section class="hero">
-      <h2>Explora, comparte y aprende sobre especies vegetales</h2>
+      <h2>Explora, comparte y aprende sobre especies nativas.</h2>
       <p>
-        Este Herbario comunitario busca recopilar especies con la ayuda del público.
-        Envía tus observaciones con fotos, ubicación y detalles botánicos.
+        Esta página busca recopilar especies nativas con ayuda de la comunidad. Colabora
+        en este proyecto a través de nuestro formulario. Envía tus observaciones con fotos,
+        ubicación y detalles.
       </p>
       <div class="cta-row">
         <a class="btn" href="#/form">Enviar una especie</a>
@@ -34,48 +35,84 @@ function viewHome() {
     <section class="features">
       <div class="feature">
         <h3>Formulario público</h3>
-        <p>Nombre científico, común, familia, descripción, imagen y coordenadas.</p>
+        <p>Completa un formulario con información requerida para colaborar en el proyecto.</p>
       </div>
       <div class="feature">
-        <h3>Aprobación por admin</h3>
-        <p>Las especies pasan por revisión antes de ser visibles.</p>
+        <h3>Revisión</h3>
+        <p>Uno de nuestros colaboradores revisará tu aporte antes de ser subido a la página. </p>
       </div>
       <div class="feature">
         <h3>Mapa colaborativo</h3>
-        <p>Ubicaciones en un tablero de Padlet mientras automatizamos el proceso.</p>
+        <p>Una vez aceptado tu aporte, será subido al mapa colaborativo.</p>
       </div>
     </section>
 
     <section class="section section-about">
       <h3>Sobre el proyecto</h3>
-      <p>Un esfuerzo colaborativo para documentar la diversidad vegetal local, fomentando el aprendizaje y la participación ciudadana.</p>
-      <p>Los aportes son revisados por el equipo antes de publicarse para asegurar consistencia y calidad de datos.</p>
+      <p>Este es un espacio comunitario para explorar, descubrir y proteger la riqueza natural 
+      que nos rodea. Aquí, unimos la pasión por la naturaleza con el poder de la 
+      tecnología para crear un mapa colaborativo de las plantas y árboles nativos, con el 
+      objetivo de revalorizar las distintas especies nativas de la región. 
+      </p>
+      <p>En esta página podrás encontrar fichas de especies nativas creadas con la impronta del Profesorado de Biología del ISFD N°51 y 
+      también información complementaria que te ayudará a identificar las especies nativas. 
+      </p>
     </section>
 
     <section class="section section-steps">
-      <h3>Cómo contribuir</h3>
+      <h3>¿Cómo contribuir?</h3>
       <div class="features">
         <div class="feature">
           <h4>1. Observa</h4>
-          <p>Registra la planta con una foto nítida y, si puedes, su ubicación.</p>
+          <p>Revisa nuestras fichas sobre especies nativas y empieza a reconocer las 
+          distintas especies que nos rodean. 
+          </p>
         </div>
         <div class="feature">
           <h4>2. Describe</h4>
-          <p>Añade nombre común o científico, familia y notas relevantes.</p>
+          <p>Una vez que hayas identificado a la especie. Completa nuestro formulario, agrega una foto y ubicación.</p>
         </div>
         <div class="feature">
           <h4>3. Envía</h4>
-          <p>Usa el formulario y nuestro equipo validará la información.</p>
+          <p>Envía la información a través del formulario y 
+          nuestro equipo de colaboradores revisará dicha información. 
+          </p>
         </div>
       </div>
     </section>
 
+    <section class="section section-map">
+      <h3>Mapa</h3>
+      <p>Accede a nuestro mapa colaborativo, donde podrás observar las ubicaciones de las especies nativas aportadas por la comunidad. Haz click aquí:</p>
+      <a href="https://padlet.com/torresfranco/mapa-colaborativo-4wvep0qch2y6m3ju" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Ver mapa colaborativo</a>
+      <p><em> Una vez aceptado tu aporte, será subido al mapa colaborativo.</em></p>
+    </section>
+
     <section class="section section-news">
-      <h3>Novedades</h3>
+      <h3>Herramientas</h3>
       <div class="features">
-        <div class="feature"><h4>Nueva versión</h4><p>Mejoras de accesibilidad y animaciones sutiles.</p></div>
-        <div class="feature"><h4>Más familias</h4><p>Ampliamos el catálogo de familias botánicas registradas.</p></div>
-        <div class="feature"><h4>Mapa</h4><p>Optimizado para consultas desde dispositivos móviles.</p></div>
+        <div class="feature">
+          <h4>PlantNet</h4>
+          <p>Recomendamos el uso de esta aplicación para identificación de flora. Para descubrir la aplicación buscalo desde tu dispositivo móvil en Play Store o App Store.<br>
+            <a href="https://identify.plantnet.org/es" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="link">Visitar PlantNet →</a>
+          </p>
+        </div>
+        <div class="feature">
+          <h4>iNaturalist</h4>
+          <p>Explora diversas especies presentes en nuestro país para ayudarte a identificar las especies nativas. Para descubrir la aplicación buscalo desde tu dispositivo móvil en Play Store o App Store.<br>
+            <a href="https://www.inaturalist.org/places/argentina#taxon=4712" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="link">Visitar iNaturalist →</a>
+          </p>
+        </div>
+        <div class="feature">
+          <h4>Fichas Nativas</h4>
+          <p>Para facilitar aún más la identificación de especies nativas recomendamos el uso de las Fichas Nativas. Creadas por colaboradores del ISFD N°51 y otros organismos.</p>
+        </div>
       </div>
     </section>
   `;
@@ -84,8 +121,8 @@ function viewHome() {
 function viewEspecies() {
   return `
     <section class="species-header">
-      <h2>Especies del Herbario</h2>
-      <p>Explora las especies vegetales registradas en nuestro herbario comunitario.</p>
+      <h2>Aportes de la comunidad</h2>
+      <p>Explora las especies que la comunidad ha aportado a través de nuestro formulario.</p>
       
       <div class="filters">
         <input type="text" id="searchInput" placeholder="Buscar por nombre científico o común..." class="search-input" />
@@ -134,7 +171,7 @@ function viewForm() {
 
       <div class="form-field form-full">
         <label for="description">Descripción</label>
-        <textarea id="description" name="description" rows="4" placeholder="Características, hábitat, notas..."></textarea>
+        <textarea id="description" name="description" rows="4" placeholder="Características, hábitat, notas... Si lo deseas, puedes incluir tu nombre"></textarea>
       </div>
 
       <div class="form-field form-full">
@@ -176,27 +213,27 @@ function viewForm() {
   `;
 }
 
-function viewMapa() {
-  return `
-    <h2>Mapa colaborativo</h2>
-    <p>
-      Este mapa está embebido desde Padlet. Por ahora añadiremos ubicaciones manualmente.
-      Cuando definamos el flujo automático, conectaremos con la base de datos.
-    </p>
-
-    <div class="padlet-wrapper">
-      <iframe
-        src="https://padlet.com/embed/tu-tablero-ejemplo"
-        allow="camera;microphone;geolocation"
-        width="100%"
-        height="600"
-        frameborder="0"
-        style="border:1px solid #1f2937; border-radius:8px"
-        title="Padlet Mapa Herbario"
-      ></iframe>
-    </div>
-  `;
-}
+// function viewMapa() {
+//   return `
+//     <h2>Mapa colaborativo</h2>
+//     <p>
+//       Este mapa está embebido desde Padlet. Por ahora añadiremos ubicaciones manualmente.
+//       Cuando definamos el flujo automático, conectaremos con la base de datos.
+//     </p>
+// 
+//     <div class="padlet-wrapper">
+//       <iframe
+//         src="https://padlet.com/embed/tu-tablero-ejemplo"
+//         allow="camera;microphone;geolocation"
+//         width="100%"
+//         height="600"
+//         frameborder="0"
+//         style="border:1px solid #1f2937; border-radius:8px"
+//         title="Padlet Mapa Herbario"
+//       ></iframe>
+//     </div>
+//   `;
+// }
 
 function viewAdminLink() {
   // Permitir siempre el acceso a la página de admin para mostrar el formulario de login
@@ -223,7 +260,7 @@ function viewDocs() {
     </style>
     <section class="hero">
       <h2>Especies</h2>
-      <p>Consulta documentos y fichas técnicas relacionadas a las especies del herbario.</p>
+      <p>Consulta documentos y fichas técnicas relacionadas a las especies nativas. También encontrarás información complementaria.</p>
     </section>
     <section class="pdf-grid" id="pdfGrid"></section>
 
@@ -248,7 +285,7 @@ function render(view, params = {}) {
     case 'home': html = viewHome(); break;
     case 'especies': html = viewEspecies(); break;
     case 'form': html = viewForm(); break;
-    case 'mapa': html = viewMapa(); break;
+    // case 'mapa': html = viewMapa(); break; // removed
     case 'admin': html = viewAdminLink(); break;
     case 'docs': html = viewDocs(); break;
     default: html = viewHome(); break;
@@ -267,11 +304,11 @@ function render(view, params = {}) {
     home: 'Inicio',
     especies: 'Especies',
     form: 'Formulario',
-    mapa: 'Mapa',
+    // mapa: 'Mapa', // removed
     admin: 'Administración',
     docs: 'Documentación'
   };
-  
+
   // Anunciar cambio de vista a lectores de pantalla
   function announceViewChange(view) {
     const region = document.getElementById('sr-status');
@@ -344,7 +381,7 @@ function render(view, params = {}) {
         outroHandled = true;
       }
     });
-  } else if (view === 'mapa') {
+  } else if (false && view === 'mapa') { // removed
     // No requiere JS específico
   }
 
@@ -369,7 +406,7 @@ function parseHash() {
     return { view: 'especies', params: { id: segs[1] } };
   }
   if (segs[0] === 'form') return { view: 'form', params: {} };
-  if (segs[0] === 'mapa') return { view: 'mapa', params: {} };
+  // if (segs[0] === 'mapa') return { view: 'mapa', params: {} }; // removed
   if (segs[0] === 'admin') return { view: 'admin', params: {} };
   if (segs[0] === 'docs') return { view: 'docs', params: {} };
 
@@ -411,7 +448,7 @@ function wireNavLinksToHash() {
       ['info_general.html', '#/docs'],
       ['aportes.html', '#/especies'],
       ['form.html', '#/form'],
-      ['mapa.html', '#/mapa'],
+      // ['mapa.html', '#/mapa'], // removed
     ]);
     const file = url.pathname.split('/').pop();
     if (mapping.has(file)) {
@@ -455,7 +492,7 @@ function canViewAdmin() {
     // Verificar primero si hay un token JWT
     const token = sessionStorage.getItem('JWT');
     if (!token) return false;
-    
+
     // Luego verificar los permisos
     const role = localStorage.getItem('role');
     const flag = localStorage.getItem('isAdmin');

@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   server: {
-    port: 5173,
+    port: 5174,
     strictPort: true,
     open: '/hub.html',
     proxy: {
@@ -30,7 +30,7 @@ export default defineConfig({
         aportes: 'aportes.html',
         admin: 'admin.html',
         form: 'form.html',
-        mapa: 'mapa.html',
+        // mapa: 'mapa.html', // removed
         info: 'info_general.html',
         index: 'index.html'
       }
