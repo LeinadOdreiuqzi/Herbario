@@ -1,14 +1,17 @@
 :root {
-  --bg: #0f172a;
+  --bg: #0e1a14;
   --fg: #e2e8f0;
   --accent: #22c55e;
   /* Extensión de paleta accesible */
   --accent-ink: #073b1a;
-  --bg-elev: #0b1220; /* superficies elevadas */
-  --surface: #111827; /* capas intermedias */
-  --border: #1f2937; /* borde sutil */
-  --muted: #94a3b8; /* texto secundario */
-  --focus-ring: rgba(34, 197, 94, 0.35);
+  --bg-elev: #112219; /* superficies elevadas */
+  --bg-elev-hover: #14281f; /* elevadas (hover) */
+  --surface: #152a20; /* capas intermedias */
+  --surface-hover: #1a3326; /* capas intermedias (hover) */
+  --border: #1f3a2b; /* borde sutil */
+  --border-strong: #26513d; /* borde resalte */
+  --muted: #9fb3a8; /* texto secundario */
+  --focus-ring: rgba(34, 197, 94, 0.3);
   --danger: #ef4444;
 }
 
@@ -86,15 +89,15 @@ ul#plantsList li {
   gap: 1.5rem;
 }
 
-.card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s, border-color 0.2s; }
-.card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s, border-color 0.2s, background-color .2s; }
+.card:hover { transform: translateY(-2px); border-color: var(--accent); background: var(--surface-hover); }
 .card-body { padding: 1rem; }
 .card-title { margin: 0 0 0.5rem 0; font-size: 1.1rem; color: var(--fg); }
 .card-meta { color: var(--muted); font-size: 0.9rem; font-style: italic; }
 
 .loading { text-align: center; padding: 2rem; color: var(--muted); }
 .no-results { text-align: center; padding: 2rem; color: var(--muted); font-style: italic; }
-.error-message { text-align: center; padding: 2rem; color: var(--danger); background: #1f1f23; border: 1px solid #374151; border-radius: 6px; }
+.error-message { text-align: center; padding: 2rem; color: var(--danger); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
 
 /* Responsive ajustes base */
 @media (max-width: 600px) {

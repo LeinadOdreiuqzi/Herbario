@@ -252,10 +252,10 @@ function viewAdminLink() {
 function viewDocs() {
   return `
     <style>
-      .modal-content iframe { width: 100%; height: 80vh; border: 0; border-radius: 8px; background: #111827; }
+      .modal-content iframe { width: 100%; height: 80vh; border: 0; border-radius: 8px; background: var(--surface); }
       .pdf-card .card-body { display: flex; align-items: center; gap: 10px; }
       .pdf-icon { font-size: 1.6rem; }
-      .pdf-meta { color: #94a3b8; font-size: 0.9rem; }
+      .pdf-meta { color: var(--muted); font-size: 0.9rem; }
       .modal-dialog { max-width: min(1100px, 95vw); }
     </style>
     <section class="hero">

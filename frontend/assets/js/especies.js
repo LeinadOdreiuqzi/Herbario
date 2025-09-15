@@ -65,8 +65,10 @@ function renderCard(p) {
   card.dataset.id = p.id; // Facilita selección por ID para rutas dinámicas
 
   const media = document.createElement('div');
+  media.className = 'card-media';
   media.style.height = '160px';
-  media.style.background = '#0f172a';
+  // background ahora viene de CSS
+  media.style.background = '';
   media.style.display = 'flex';
   media.style.alignItems = 'center';
   media.style.justifyContent = 'center';

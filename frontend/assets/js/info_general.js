@@ -91,10 +91,10 @@ function buildPdfFrame(title, srcUrl) {
   loadingMsg.style.top = '50%';
   loadingMsg.style.left = '50%';
   loadingMsg.style.transform = 'translate(-50%, -50%)';
-  loadingMsg.style.color = '#94a3b8';
+  loadingMsg.style.color = 'var(--muted)';
   loadingMsg.style.padding = '10px';
   loadingMsg.style.borderRadius = '4px';
-  loadingMsg.style.backgroundColor = 'rgba(17, 24, 39, 0.7)';
+  loadingMsg.style.backgroundColor = 'var(--surface)';
   
   const iframe = document.createElement('iframe');
   iframe.loading = 'lazy';
@@ -114,7 +114,7 @@ function buildPdfFrame(title, srcUrl) {
   `;
   mobileMsg.style.marginTop = '8px';
   mobileMsg.style.padding = '8px';
-  mobileMsg.style.backgroundColor = 'rgba(17, 24, 39, 0.7)';
+  mobileMsg.style.backgroundColor = 'var(--surface)';
   mobileMsg.style.borderRadius = '4px';
   mobileMsg.style.borderLeft = '3px solid var(--accent)';
   mobileMsg.style.fontSize = '0.9rem';

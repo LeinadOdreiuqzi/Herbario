@@ -63,7 +63,7 @@ async function verifySessionAndRedirect() {
     const { data, error } = await apiClient.verify();
     
     if (error || !data?.user) {
-      // Si había token pero no es válido, redirigimos al inicio
+      // Si había token pero no es válido, redirigir al inicio
       redirectToHome();
       return false;
     }
@@ -133,8 +133,10 @@ function renderCard(item, scope) {
 
   // Media (imagen si existe)
   const media = document.createElement('div');
+  media.className = 'card-media';
   media.style.height = '140px';
-  media.style.background = '#0f172a';
+  // background ahora viene de CSS
+  media.style.background = '';
   media.style.display = 'flex';
   media.style.alignItems = 'center';
   media.style.justifyContent = 'center';
@@ -334,7 +336,7 @@ function ensureEditModal() {
   dialog.style.width = 'min(740px, 96vw)';
   dialog.style.maxHeight = '90vh';
   dialog.style.overflow = 'auto';
-  dialog.style.background = '#0f172a';
+  dialog.style.background = 'var(--bg-elev)';
   dialog.style.borderRadius = '12px';
   dialog.style.boxShadow = '0 10px 30px rgba(0,0,0,0.25)';
   dialog.style.padding = '20px';
