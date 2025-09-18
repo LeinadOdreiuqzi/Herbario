@@ -9,6 +9,9 @@ let btnGeo;
 let btnCamera;
 let toast;
 let removeBtn;
+// Añadido: referencia al botón de envío y guardia de estado para evitar múltiples envíos
+let submitBtn;
+let isSubmitting = false;
 
 // Variables para la cámara
 let videoStream = null;
@@ -30,6 +33,8 @@ function bindEls() {
   btnCamera = qs('#btnCamera');
   toast = qs('#toast');
   removeBtn = qs('#dzRemove');
+  // Añadido: localizar el botón submit dentro del formulario
+  submitBtn = form ? form.querySelector('button[type="submit"]') : null;
 }
 
 function prefersReducedMotion() {
@@ -387,33 +392,47 @@ export async function mountForm() {
   // Reset de estado de archivo/preview para cada montaje
   selectedFile = null;
   updatePreview(null);
+  // Añadido: resetear guardia de envío por cada montaje
+  isSubmitting = false;
   init();
 
   // Listeners por instancia de DOM (no se duplican porque los nodos antiguos se destruyen en cada render)
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const scientific_name = qs('#scientific_name')?.value.trim() || '';
-    const common_name = qs('#common_name')?.value.trim() || '';
-    const family = qs('#family')?.value.trim() || '';
-    const description = qs('#description')?.value.trim() || '';
-    const latitude = qs('#latitude')?.value.trim() || '';
-    const longitude = qs('#longitude')?.value.trim() || '';
-
-    if (!scientific_name || !common_name) {
-      showToast('Completa al menos Nombre científico y Nombre común');
-      return;
+    // Añadido: prevenir envíos múltiples y dar feedback al usuario
+    if (isSubmitting) return;
+    isSubmitting = true;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      // Guardar texto original para restaurar luego
+      if (!submitBtn.dataset.originalText) submitBtn.dataset.originalText = submitBtn.textContent || '';
+      submitBtn.textContent = 'Enviando…';
+      submitBtn.setAttribute('aria-busy', 'true');
     }
-
-    // Mantener metadatos locales para futura integración de storage o backend
-    const _client = {
-      scientific_name,
-      description: description || null,
-      coordinates: (latitude && longitude) ? { lat: Number(latitude), lng: Number(longitude) } : null,
-      image: selectedFile ? { name: selectedFile.name, type: selectedFile.type, size: selectedFile.size } : null
-    };
+    if (form) form.setAttribute('aria-busy', 'true');
 
     try {
+      const scientific_name = qs('#scientific_name')?.value.trim() || '';
+      const common_name = qs('#common_name')?.value.trim() || '';
+      const family = qs('#family')?.value.trim() || '';
+      const description = qs('#description')?.value.trim() || '';
+      const latitude = qs('#latitude')?.value.trim() || '';
+      const longitude = qs('#longitude')?.value.trim() || '';
+
+      if (!scientific_name || !common_name) {
+        showToast('Completa al menos Nombre científico y Nombre común');
+        return;
+      }
+
+      // Mantener metadatos locales para futura integración de storage o backend
+      const _client = {
+        scientific_name,
+        description: description || null,
+        coordinates: (latitude && longitude) ? { lat: Number(latitude), lng: Number(longitude) } : null,
+        image: selectedFile ? { name: selectedFile.name, type: selectedFile.type, size: selectedFile.size } : null
+      };
+
       // Enviar como multipart/form-data para incluir la imagen (campo 'imagen')
       const fd = new FormData();
       fd.append('name', common_name || scientific_name);
@@ -440,6 +459,15 @@ export async function mountForm() {
     } catch (err) {
       console.error(err);
       showToast('No se pudo enviar el aporte');
+    } finally {
+      // Restaurar estado del botón y del formulario
+      if (form) form.removeAttribute('aria-busy');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = submitBtn.dataset.originalText || 'Enviar';
+        submitBtn.removeAttribute('aria-busy');
+      }
+      isSubmitting = false;
     }
   });
 
