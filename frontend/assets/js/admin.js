@@ -24,6 +24,9 @@ function buildImageUrl(id) {
 // Estado global de la sesión
 let currentUser = null;
 let isAuthenticated = false;
+// Auto-refresh: configuración y estado
+const REFRESH_INTERVAL_MS = 30000; // 30s
+let refreshTimer = null;
 
 // Utilidades para mostrar mensajes
 function showToast(msg, timeout = 2200) {
@@ -40,11 +43,45 @@ function setupHistoryProtection() {
     if (event.persisted) {
       // Verificar sesión inmediatamente
       verifySessionAndRedirect();
+      // Forzar refresco de datos cuando regresa el foco/visibilidad
+      if (isAuthenticated) safeRefreshData();
     }
   });
 
-  // Verificar sesión cuando la ventana recupera el foco
-  window.addEventListener('focus', verifySessionAndRedirect);
+  // Verificar sesión cuando la ventana recupera el foco y refrescar datos
+  window.addEventListener('focus', () => {
+    verifySessionAndRedirect();
+    if (isAuthenticated) safeRefreshData();
+  });
+}
+
+// Pequeño helper para evitar caches intermedios en GETs sensibles
+function cacheBusted(path) {
+  const ts = Date.now();
+  return path.includes('?') ? `${path}&_=${ts}` : `${path}?_=${ts}`;
+}
+
+async function safeRefreshData() {
+  try {
+    await Promise.all([loadPending(), loadAccepted()]);
+  } catch (e) {
+    console.warn('[Admin] Auto-refresh fallido:', e?.message || e);
+  }
+}
+
+function startAutoRefresh() {
+  if (refreshTimer) return;
+  refreshTimer = setInterval(() => {
+    if (!isAuthenticated || document.hidden) return;
+    safeRefreshData();
+  }, REFRESH_INTERVAL_MS);
+}
+
+function stopAutoRefresh() {
+  if (refreshTimer) {
+    clearInterval(refreshTimer);
+    refreshTimer = null;
+  }
 }
 
 // Verificar sesión y redirigir si no es válida
@@ -93,15 +130,18 @@ async function updateUIAuth() {
       // No hay sesión válida
       currentUser = null;
       isAuthenticated = false;
+      stopAutoRefresh();
     } else {
       // Sesión válida
       currentUser = data.user;
       isAuthenticated = true;
+      startAutoRefresh();
     }
   } catch (err) {
     console.warn('[Admin] Error verificando sesión:', err);
     currentUser = null;
     isAuthenticated = false;
+    stopAutoRefresh();
   }
 
   console.info('[Admin] updateUIAuth: autenticado =', isAuthenticated);
@@ -209,13 +249,23 @@ function renderCard(item, scope) {
   return card;
 }
 
-// Cargar plantas pendientes
+let pendingSeq = 0;
+let acceptedSeq = 0;
+
+// Cargar plantas pendientes con control de concurrencia para evitar duplicados visuales
 async function loadPending() {
+  const seq = ++pendingSeq; // versión de esta carga
   pendingList.replaceChildren();
   try {
-    const { data, error } = await apiClient.request('/plants?status=pending');
+    const { data, error } = await apiClient.request('/plants?status=pending', {
+      headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' },
+      cache: 'no-store'
+    });
 
     if (error) throw error;
+
+    // Si llegó una petición más nueva mientras esperábamos, abortamos render
+    if (seq !== pendingSeq) return;
 
     const raw = data?.data ?? data; // soporta {data, pagination} o array plano
     const rows = Array.isArray(raw) ? [...raw] : [];
@@ -234,20 +284,29 @@ async function loadPending() {
 
     rows.forEach(it => pendingList.appendChild(renderCard(it, 'pending')));
   } catch (err) {
-    console.error('[Admin] loadPending error:', err?.message || err);
+    // Si esta no es la petición más reciente, no mostramos error para evitar parpadeos/duplicados
+    if (seq !== pendingSeq) return;
+    console.error('[Admin] loadPending error:', err?.name === 'AbortError' ? 'Abortada' : (err?.message || err));
     const p = document.createElement('p');
     p.textContent = 'Error al cargar pendientes.';
     pendingList.appendChild(p);
   }
 }
 
-// Cargar plantas aceptadas
+// Cargar plantas aceptadas con control de concurrencia para evitar duplicados visuales
 async function loadAccepted() {
+  const seq = ++acceptedSeq; // versión de esta carga
   acceptedList.replaceChildren();
   try {
-    const { data, error } = await apiClient.request('/plants?status=accepted');
+    const { data, error } = await apiClient.request('/plants?status=accepted', {
+      headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' },
+      cache: 'no-store'
+    });
 
     if (error) throw error;
+
+    // Si llegó una petición más nueva mientras esperábamos, abortamos render
+    if (seq !== acceptedSeq) return;
 
     const raw = data?.data ?? data; // soporta {data, pagination} o array plano
     const rows = Array.isArray(raw) ? [...raw] : [];
@@ -265,7 +324,9 @@ async function loadAccepted() {
     }
     rows.forEach(it => acceptedList.appendChild(renderCard(it, 'accepted')));
   } catch (err) {
-    console.error('[Admin] loadAccepted error:', err?.message || err);
+    // Si esta no es la petición más reciente, no mostramos error para evitar parpadeos/duplicados
+    if (seq !== acceptedSeq) return;
+    console.error('[Admin] loadAccepted error:', err?.name === 'AbortError' ? 'Abortada' : (err?.message || err));
     const p = document.createElement('p');
     p.textContent = 'Error al cargar aceptadas.';
     acceptedList.appendChild(p);
@@ -503,6 +564,7 @@ loginForm.addEventListener('submit', async (e) => {
     
     await updateUIAuth();
     await Promise.all([loadAccepted(), loadPending()]);
+    startAutoRefresh();
     initInactivityWatcher();
   } catch (err) {
     console.error('[Admin] Error en login:', err?.message || err);
@@ -519,6 +581,7 @@ btnLogout.addEventListener('click', async () => {
     acceptedList.replaceChildren();
     pendingList.replaceChildren();
     stopInactivityWatcher();
+    stopAutoRefresh();
     // Solo cargar plantas públicas después del logout
     loadAccepted();
     // Redirigir a la página principal después de cerrar sesión
@@ -533,6 +596,7 @@ btnLogout.addEventListener('click', async () => {
     acceptedList.replaceChildren();
     pendingList.replaceChildren();
     stopInactivityWatcher();
+    stopAutoRefresh();
     loadAccepted();
     // Redirigir a la página principal después de cerrar sesión
     setTimeout(() => {
@@ -566,6 +630,7 @@ function resetInactivityTimer() {
         acceptedList.replaceChildren();
         pendingList.replaceChildren();
         stopInactivityWatcher();
+        stopAutoRefresh();
         loadAccepted();
       }
     } catch (e) {
@@ -598,21 +663,24 @@ async function init() {
       // No hay sesión válida, mostrar solo el formulario de login
       currentUser = null;
       isAuthenticated = false;
+      stopAutoRefresh();
     } else {
       // Sesión válida, mostrar panel completo
       currentUser = data.user;
       isAuthenticated = true;
+      startAutoRefresh();
       
       // Cargar datos solo si hay sesión válida
       await Promise.all([
-        loadPendingSubmissions(),
-        loadAcceptedSubmissions()
+        loadPending(),
+        loadAccepted()
       ]);
     }
   } catch (err) {
     console.warn('[Admin] Error en inicialización:', err);
     currentUser = null;
     isAuthenticated = false;
+    stopAutoRefresh();
   }
   
   // Actualizar la interfaz según el estado de autenticación
@@ -620,16 +688,8 @@ async function init() {
   
   // Iniciar el watcher de inactividad solo si está autenticado
   if (isAuthenticated) {
-    startInactivityWatcher();
+    startAutoRefresh();
     initInactivityWatcher();
-  }
-  
-  // Siempre cargar plantas aceptadas (públicas)
-  loadAccepted();
-  
-  // Solo cargar pendientes si hay sesión autenticada
-  if (isAuthenticated) {
-    loadPending();
   }
 }
 
